@@ -1,0 +1,21 @@
+#!/bin/bash
+
+while getopts "f:i:sd" opt
+do
+	case $opt in
+		f)
+			logf=$OPTARG
+		;;
+		d)
+			state=[done]
+		;;
+		s)
+			state=[start]
+		;;
+		i)
+			information=$OPTARG
+		;;
+	esac
+done
+ctime=$(date +"%Y-%m-%d %H:%M:%S")
+echo "$ctime  $information  $state" >> $logf

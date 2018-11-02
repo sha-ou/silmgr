@@ -1,0 +1,62 @@
+#!/bin/bash
+
+ROOTDIR=$(cd $(dirname $0); pwd)
+CMDSF=${ROOTDIR}/CMDSF
+CJOBF=${ROOTDIR}/CJOBF
+BUFF=${ROOTDIR}/BUFF
+
+function help(){
+	echo "help information"
+	echo "-a \"job\"      append a new job"
+	echo "-l            list all jobs"
+	echo "-r num        remove a job by number"
+	echo "-c            current job"
+	echo "-e            empty job list"
+	echo "-h            for help information"
+}
+
+function creatfile(){
+    if [[ ! -e "$1" ]]; then
+        touch $1
+    fi
+}
+
+creatfile $CMDSF
+creatfile $CJOBF
+
+while getopts "a:lhr:ec" opt
+do
+	case $opt in
+		a)
+            WKDIR=$(pwd)
+            echo $WKDIR $OPTARG >> $CMDSF
+		;;
+		l)
+            all=$(cat $CMDSF | wc -l)
+            echo "Total $all job(s)"
+			cat -n $CMDSF
+		;;
+		r)
+            num=$OPTARG
+            all=$(cat $CMDSF | wc -l)
+            cat $CMDSF | head -n $(($num-1)) > $BUFF
+            cat $CMDSF | tail -n $(($all-$num)) >> $BUFF
+            cat $BUFF > $CMDSF
+            rm -f $BUFF
+		;;
+		e)
+			rm -f $CMDSF
+			touch $CMDSF
+            echo "Total 0 job(s)"
+		;;
+		c)
+			cat $CJOBF
+		;;
+		h)
+            help
+		;;
+		?)
+			echo "-h option for help"
+		;;
+	esac
+done

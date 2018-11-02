@@ -1,0 +1,63 @@
+#!/bin/bash
+
+ROOTDIR=$(cd $(dirname $0); pwd)
+CMDSF=${ROOTDIR}/CMDSF
+CJOBF=${ROOTDIR}/CJOBF
+
+function excutejob(){
+    rundir=$1
+    sourcefile=$2
+    runoutd=runoutd
+    runoutf=${runoutd}/$3
+    runerrf=${runoutd}/$4
+    runlogf=${runoutd}/runlog.all
+
+    cd $rundir
+    
+    if [[ ! -d "$runoutd" ]]; then
+        mkdir $runoutd
+    fi
+
+    # echo "---------------------" $(date "+%Y-%m-%d %H:%M:%S") "---------------------" >> $runlogf
+    silog -s -i "deckbuild -run -ascii $sourcefile -outfile $runoutf 2>> $runerrf" -f $runlogf
+    deckbuild -run -ascii $sourcefile -outfile $runoutf 2>> $runerrf
+    silog -d -i "deckbuild -run -ascii $sourcefile -outfile $runoutf 2>> $runerrf" -f $runlogf
+
+    cd $ROOTDIR
+}
+
+function popjob(){
+    all=$(cat $CMDSF | wc -l)
+    cat $CMDSF | tail -n $(($all-1)) > cmdbuff
+    cat cmdbuff > $CMDSF
+    rm cmdbuff -f
+}
+
+function printjob(){
+    rundir=$1
+    sourcefile=$2
+    runoutd=runoutd
+    runoutf=${runoutd}/$3
+    runerrf=${runoutd}/$4
+    runlogf=${runoutd}/runlog.all
+
+    echo "sourcefile is $sourcefile"
+    echo "rundir     is $rundir"
+    echo "runoutd    is $runoutd"
+    echo "runoutf    is $runoutf"
+    echo "runerrf    is $runerrf"
+    echo "runlogf    is $runlogf"
+}
+
+while true
+do
+    cat $CMDSF | head -1 > $CJOBF
+    job=$(cat $CJOBF)
+	if [[ -n $job ]]; then
+        excutejob $job
+        popjob
+		sleep 3
+	else
+		sleep 3
+	fi
+done
