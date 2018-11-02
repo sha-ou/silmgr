@@ -3,16 +3,24 @@
 ROOTDIR=$(cd $(dirname $0); pwd)
 CMDSF=${ROOTDIR}/CMDSF
 CJOBF=${ROOTDIR}/CJOBF
-BUFF=${ROOTDIR}/BUFF
 
 function help(){
 	echo "help information"
 	echo "-a \"job\"      append a new job"
 	echo "-l            list all jobs"
-	echo "-r num        remove a job by number"
+    echo "-r n1[,n2]    remove job(s) by number"
 	echo "-c            current job"
 	echo "-e            empty job list"
 	echo "-h            for help information"
+}
+
+function addjob(){
+    WKDIR=$(pwd)
+    sourcefile=$(echo $OPTARG | cut -d " " -f1)
+    verson=$(echo $OPTARG | cut -d " " -f2)
+    runoutf=runout.${verson}
+    runerrf=runerr.${verson}
+    echo $WKDIR $sourcefile $runoutf $runerrf >> $CMDSF
 }
 
 function creatfile(){
@@ -28,21 +36,20 @@ while getopts "a:lhr:ec" opt
 do
 	case $opt in
 		a)
-            WKDIR=$(pwd)
-            echo $WKDIR $OPTARG >> $CMDSF
+            addjob
 		;;
 		l)
             all=$(cat $CMDSF | wc -l)
             echo "Total $all job(s)"
-			cat -n $CMDSF
+            cat -n $CMDSF | sed '1s/$/ (running)/'
 		;;
 		r)
             num=$OPTARG
-            all=$(cat $CMDSF | wc -l)
-            cat $CMDSF | head -n $(($num-1)) > $BUFF
-            cat $CMDSF | tail -n $(($all-$num)) >> $BUFF
-            cat $BUFF > $CMDSF
-            rm -f $BUFF
+            sed -i "${num}d" $CMDSF
+            # all=$(cat $CMDSF | wc -l)
+            # if [[ "$num" -le "$all" ]]; then
+                # sed -i "${num}d" $CMDSF
+            # fi
 		;;
 		e)
 			rm -f $CMDSF

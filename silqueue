@@ -9,7 +9,7 @@ function excutejob(){
     sourcefile=$2
     runoutd=runoutd
     runoutf=${runoutd}/$3
-    runerrf=${runoutd}/$4
+    runerrf=${runoutd}/$3
     runlogf=${runoutd}/runlog.all
 
     cd $rundir
@@ -27,10 +27,7 @@ function excutejob(){
 }
 
 function popjob(){
-    all=$(cat $CMDSF | wc -l)
-    cat $CMDSF | tail -n $(($all-1)) > cmdbuff
-    cat cmdbuff > $CMDSF
-    rm cmdbuff -f
+    sed -i '1d' $CMDSF
 }
 
 function printjob(){
@@ -38,9 +35,10 @@ function printjob(){
     sourcefile=$2
     runoutd=runoutd
     runoutf=${runoutd}/$3
-    runerrf=${runoutd}/$4
+    runerrf=${runoutd}/$3
     runlogf=${runoutd}/runlog.all
 
+    echo "=============================="
     echo "sourcefile is $sourcefile"
     echo "rundir     is $rundir"
     echo "runoutd    is $runoutd"
@@ -51,10 +49,10 @@ function printjob(){
 
 while true
 do
-    cat $CMDSF | head -1 > $CJOBF
+    sed -n '1p' $CMDSF > $CJOBF
     job=$(cat $CJOBF)
 	if [[ -n $job ]]; then
-        excutejob $job
+        printjob $job
         popjob
 		sleep 3
 	else
