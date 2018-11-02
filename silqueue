@@ -52,7 +52,7 @@ do
     sed -n '1p' $CMDSF > $CJOBF
     job=$(cat $CJOBF)
 	if [[ -n $job ]]; then
-        printjob $job
+        excutejob $job
         popjob
 		sleep 3
 	else
