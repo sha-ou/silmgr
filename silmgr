@@ -20,6 +20,7 @@ function addjob(){
     verson=$(echo $OPTARG | cut -d " " -f2)
     runoutf=runout.${verson}
     runerrf=runerr.${verson}
+    echo ">> add job : deckbuild $WKDIR/$sourcefile"
     echo $WKDIR $sourcefile $runoutf $runerrf >> $CMDSF
 }
 
