@@ -7,6 +7,7 @@ CJOBF=${ROOTDIR}/CJOBF
 function help(){
 	echo "help information"
 	echo "-a \"job\"      append a new job"
+    echo "-i            insert job"
 	echo "-l            list all jobs"
     echo "-r n1[,n2]    remove job(s) by number"
 	echo "-c            current job"
@@ -24,6 +25,17 @@ function addjob(){
     echo $WKDIR $sourcefile $runoutf $runerrf >> $CMDSF
 }
 
+function insertjob(){
+    WKDIR=$(pwd)
+    num=$(echo ${OPTARG} | cut -d " " -f1)
+    sourcefile=$(echo ${OPTARG} | cut -d " " -f2)
+    vserson=$(echo ${OPTARG} | cut -d " " -f3)
+    runoutf=runout.${verson}
+    runerrf=runerr.${verson}
+    echo "Insert job to position ${num}: deckbuild $WKDIR/$sourcefile"
+    sed -i "${num}i ${WKDIR} ${sourcefile} ${runoutf} ${runerrf}" $CMDSF
+}
+
 function creatfile(){
     if [[ ! -e "$1" ]]; then
         touch $1
@@ -33,12 +45,15 @@ function creatfile(){
 creatfile $CMDSF
 creatfile $CJOBF
 
-while getopts "a:lhr:ec" opt
+while getopts "a:i:lhr:ec" opt
 do
 	case $opt in
 		a)
             addjob
 		;;
+        i)
+            insertjob
+        ;;
 		l)
             all=$(cat $CMDSF | wc -l)
             echo "Total $all job(s)"
