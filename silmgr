@@ -29,7 +29,7 @@ function insertjob(){
     WKDIR=$(pwd)
     num=$(echo ${OPTARG} | cut -d " " -f1)
     sourcefile=$(echo ${OPTARG} | cut -d " " -f2)
-    vserson=$(echo ${OPTARG} | cut -d " " -f3)
+    verson=$(echo ${OPTARG} | cut -d " " -f3)
     runoutf=runout.${verson}
     runerrf=runerr.${verson}
     echo "Insert job to position ${num}: deckbuild $WKDIR/$sourcefile"
