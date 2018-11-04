@@ -9,7 +9,7 @@ function excutejob(){
     sourcefile=$2
     runoutd=runoutd
     runoutf=${runoutd}/$3
-    runerrf=${runoutd}/$3
+    runerrf=${runoutd}/$4
     runlogf=${runoutd}/runlog.all
 
     cd $rundir
@@ -35,7 +35,7 @@ function printjob(){
     sourcefile=$2
     runoutd=runoutd
     runoutf=${runoutd}/$3
-    runerrf=${runoutd}/$3
+    runerrf=${runoutd}/$4
     runlogf=${runoutd}/runlog.all
 
     echo "=============================="
