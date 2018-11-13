@@ -11,6 +11,7 @@ function help(){
 	echo "-l            list all jobs"
     echo "-r n1[,n2]    remove job(s) by number"
 	echo "-c            current job"
+	echo "-s            show current job runout"
 	echo "-e            empty job list"
 	echo "-h            for help information"
 }
@@ -36,6 +37,12 @@ function insertjob(){
     sed -i "${num}i ${WKDIR} ${sourcefile} ${runoutf} ${runerrf}" $CMDSF
 }
 
+function showrunout(){
+    WKDIR=$(cat $CJOBF | cut -d ' ' -f1)
+    RUNOUT=$(cat $CJOBF | cut -d ' ' -f3)
+    cat ${WKDIR}/runoutd/${RUNOUT}
+}
+
 function creatfile(){
     if [[ ! -e "$1" ]]; then
         touch $1
@@ -45,7 +52,7 @@ function creatfile(){
 creatfile $CMDSF
 creatfile $CJOBF
 
-while getopts "a:i:lhr:ec" opt
+while getopts "a:i:lhr:ecs" opt
 do
 	case $opt in
 		a)
@@ -75,6 +82,9 @@ do
 		c)
 			cat $CJOBF
 		;;
+        s)
+            showrunout
+        ;;
 		h)
             help
 		;;
