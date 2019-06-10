@@ -6,14 +6,14 @@ CJOBF=${ROOTDIR}/CJOBF
 
 function help(){
 	echo "help information"
-	echo "-a \"job\"      append a new job"
-    echo "-i            insert job"
-	echo "-l            list all jobs"
-    echo "-r n1[,n2]    remove job(s) by number"
-	echo "-c            current job"
-	echo "-s            show current job runout"
-	echo "-e            empty job list"
-	echo "-h            for help information"
+	echo "-a \"job\"        append a new job"
+    echo "-i index \"job\"  insert job"
+	echo "-l              list all jobs"
+    echo "-r n1[,n2]      remove job(s) by number"
+	echo "-c              current job"
+	echo "-s              show current job runout"
+	echo "-e              empty job list"
+	echo "-h              for help information"
 }
 
 function addjob(){
@@ -69,10 +69,6 @@ do
 		r)
             num=$OPTARG
             sed -i "${num}d" $CMDSF
-            # all=$(cat $CMDSF | wc -l)
-            # if [[ "$num" -le "$all" ]]; then
-                # sed -i "${num}d" $CMDSF
-            # fi
 		;;
 		e)
 			rm -f $CMDSF
